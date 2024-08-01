@@ -121,7 +121,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_https_out_to_internet" {
 ################################### ECS  
 
 # ECS Task Definition 
-resource "aws_ecs_task_definition" "webapp" {
+resource "aws_ecs_task_definition" "nts_webapp" {
   family                   = var.family
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -130,7 +130,7 @@ resource "aws_ecs_task_definition" "webapp" {
 
   container_definitions = jsonencode([
     {
-      name  = "webapp"
+      name  = var.container_display_name_nts_webapp
       image = "${aws_ecr_repository.ecr_image_repo.repository_url}",
       portMappings = [
         {
@@ -144,7 +144,7 @@ resource "aws_ecs_task_definition" "webapp" {
   task_role_arn      = aws_iam_role.ecs_task_role.arn
 }
 # # ECS Task Definition 
-# resource "aws_ecs_task_definition" "webapp" {
+# resource "aws_ecs_task_definition" "nts_webapp" {
 #   family                   = "webapp-task"
 #   network_mode             = "awsvpc"
 #   requires_compatibilities = ["FARGATE"]
@@ -168,10 +168,10 @@ resource "aws_ecs_task_definition" "webapp" {
 # }
 
 # ECS Service 
-resource "aws_ecs_service" "webapp" {
-  name            = "webapp-service"
+resource "aws_ecs_service" "nts_webapp" {
+  name            = "nts-webapp-service"
   cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.webapp.arn
+  task_definition = aws_ecs_task_definition.nts_webapp.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -181,8 +181,8 @@ resource "aws_ecs_service" "webapp" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.webapp-tg.arn
-    container_name   = "webapp"
+    target_group_arn = aws_lb_target_group.nts_webapp_tg.arn
+    container_name   = var.container_display_name_nts_webapp
     container_port   = 80
   }
 }

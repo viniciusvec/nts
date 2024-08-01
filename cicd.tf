@@ -80,7 +80,7 @@ resource "aws_codebuild_project" "codebuild" {
   }
   environment {
     compute_type                = "BUILD_GENERAL1_MEDIUM"
-    image                       = "aws/codebuild/standard:3.0"
+    image                       = "aws/codebuild/standard:5.0"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = true
     image_pull_credentials_type = "CODEBUILD"
@@ -94,7 +94,20 @@ resource "aws_codebuild_project" "codebuild" {
     }
     environment_variable {
       name  = "CONTAINER_NAME"
-      value = var.family
+      value = var.container_display_name_nts_webapp
+    }
+
+    environment_variable {
+      name  = "AWS_ACCOUNT_ID"
+      value = data.aws_caller_identity.current.account_id
+    }
+    environment_variable {
+      name  = "IMAGE_REPO_NAME"
+      value = var.container_display_name_nts_webapp
+    }
+    environment_variable {
+      name  = "IMAGE_TAG"
+      value = "latest"
     }
 
   }
@@ -135,11 +148,31 @@ resource "aws_iam_policy" "codepipeline_policy" {
   "Statement": [
     {
       "Action": [
-        "s3:GetObject", "s3:GetObjectVersion", "s3:PutObject",
-        "s3:GetBucketVersioning"
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:PutObjectAcl",
+        "s3:PutObject"
       ],
       "Effect": "Allow",
       "Resource": "${aws_s3_bucket.artifact_bucket.arn}/*"
+    },
+    {
+      "Effect":"Allow",
+      "Action": [
+        "s3:GetBucketVersioning"
+      ],
+      "Resource": "${aws_s3_bucket.artifact_bucket.arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+         "kms:DescribeKey",
+         "kms:GenerateDataKey*",
+         "kms:Encrypt",
+         "kms:ReEncrypt*",
+         "kms:Decrypt"
+      ],
+      "Resource": "*"
     },
     {
       "Action": [
@@ -171,6 +204,7 @@ resource "aws_iam_role_policy_attachment" "codepipeline-attach" {
 }
 
 resource "aws_s3_bucket" "artifact_bucket" {
+  force_destroy = true
 }
 
 # CodePipeline 
@@ -252,10 +286,14 @@ resource "aws_codepipeline" "pipeline" {
 # -------------------------------------------------------------------------------------------------
 # ECR
 # -------------------------------------------------------------------------------------------------
+output "instance_ip_addr" {
+  value = aws_ecr_repository.ecr_image_repo.repository_url
+}
 
 resource "aws_ecr_repository" "ecr_image_repo" {
-  name                 = var.container_source_repo_name_nts_webapp
+  name                 = var.container_display_name_nts_webapp
   image_tag_mutability = "MUTABLE"
+  force_delete         = true
 
   #  image_scanning_configuration {
   #    scan_on_push = true
