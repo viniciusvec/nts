@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-2" # Alternatively, "eu-central-1" for EU
+  region = var.region # Alternatively, "eu-central-1" for EU
 }
 
 ################################### VPC 
