@@ -43,12 +43,12 @@ variable "container_source_repo_name_nts_webapp" {
 }
 
 variable "family" {
-  description = "Name of the stack."
+  description = ""
   default     = "webapp-task"
 }
 
 variable "build_project_source" {
-  description = "aws/codebuild/standard:4.0"
+  description = "aws/codebuild/standard:5.0"
   type        = string
   default     = "CODEPIPELINE"
 }

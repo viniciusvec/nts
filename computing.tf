@@ -76,7 +76,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy" {
 }
 
 
-resource "aws_ecs_cluster" "main" {
+resource "aws_ecs_cluster" "nts_webapp" {
   name = "webapp-cluster"
 }
 
@@ -143,34 +143,11 @@ resource "aws_ecs_task_definition" "nts_webapp" {
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_role.arn
 }
-# # ECS Task Definition 
-# resource "aws_ecs_task_definition" "nts_webapp" {
-#   family                   = "webapp-task"
-#   network_mode             = "awsvpc"
-#   requires_compatibilities = ["FARGATE"]
-#   cpu                      = "256" # 256 CPU units equate to 0.25 vCPUs
-#   memory                   = "512" # 512 MiB
-
-#   container_definitions = jsonencode([
-#     {
-#       name  = "webapp"
-#       image = "nginx"
-#       portMappings = [
-#         {
-#           containerPort = 80
-#           hostPort      = 80
-#         }
-#       ]
-#     }
-#   ])
-#   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-#   task_role_arn      = aws_iam_role.ecs_task_role.arn
-# }
 
 # ECS Service 
 resource "aws_ecs_service" "nts_webapp" {
-  name            = "nts-webapp-service"
-  cluster         = aws_ecs_cluster.main.id
+  name            = "ntswebapp-service"
+  cluster         = aws_ecs_cluster.nts_webapp.id
   task_definition = aws_ecs_task_definition.nts_webapp.arn
   desired_count   = 1
   launch_type     = "FARGATE"
