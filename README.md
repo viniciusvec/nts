@@ -15,5 +15,6 @@ Lorem Ipsum
 |-- storage.tf
 ```
 
-Manually update pending connection
-https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html
+- disabled replication to reduce unnecessary deployment for this lab
+- Manually update pending connection (https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
+- connections rename of permissions (https://docs.aws.amazon.com/dtconsole/latest/userguide/rename.html)

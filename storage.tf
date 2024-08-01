@@ -42,7 +42,7 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 #   manage_master_user_password = true
 
 #   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
-#   availability_zones   = data.aws_availability_zones.available.names #["eu-west-2a", "eu-west-2b"]
+#   availability_zones   = var.availability_zones #["eu-west-2a", "eu-west-2b"]
 
 #   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
