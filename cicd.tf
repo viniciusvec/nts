@@ -45,22 +45,16 @@ resource "aws_iam_policy" "codebuild_policy" {
     },
     {
       "Action": [
-        "ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage",
-        "ecr:BatchCheckLayerAvailability", "ecr:PutImage",
-        "ecr:InitiateLayerUpload", "ecr:UploadLayerPart",
+        "ecr:BatchGetImage",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:PutImage",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:GetDownloadUrlForLayer",
         "ecr:CompleteLayerUpload"
       ],
       "Effect": "Allow",
-      "Resource": "${aws_ecr_repository.image_repo.arn}"
-    },
-    {
-      "Action": [
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "ecr:BatchCheckLayerAvailability"
-      ],
-      "Effect": "Allow",
-      "Resource": "${aws_ecr_repository.image_repo.arn}"
+      "Resource": "${aws_ecr_repository.ecr_image_repo.arn}"
     }
   ]
 }
@@ -77,9 +71,9 @@ resource "aws_iam_role_policy_attachment" "codebuild-attach" {
 
 resource "aws_codebuild_project" "codebuild" {
   depends_on = [
-    aws_ecr_repository.image_repo
+    aws_ecr_repository.ecr_image_repo
   ]
-  name         = "codebuild-${var.container_display_name_nginx}-${var.container_source_repo_branch_nginx}"
+  name         = "codebuild-${var.container_display_name_nts_webapp}-${var.container_source_repo_branch_nts_webapp}"
   service_role = aws_iam_role.codebuild_role.arn
   artifacts {
     type = "CODEPIPELINE"
@@ -92,7 +86,7 @@ resource "aws_codebuild_project" "codebuild" {
     image_pull_credentials_type = "CODEBUILD"
     environment_variable {
       name  = "REPOSITORY_URI"
-      value = aws_ecr_repository.image_repo.repository_url
+      value = aws_ecr_repository.ecr_image_repo.repository_url
     }
     environment_variable {
       name  = "AWS_DEFAULT_REGION"
@@ -100,7 +94,7 @@ resource "aws_codebuild_project" "codebuild" {
     }
     environment_variable {
       name  = "CONTAINER_NAME"
-      value = "nginx" #var.family
+      value = var.family
     }
 
   }
@@ -190,7 +184,7 @@ resource "aws_codepipeline" "pipeline" {
   depends_on = [
     aws_codebuild_project.codebuild,
   ]
-  name     = "${var.container_display_name_nginx}-${var.container_source_repo_branch_nginx}-Pipeline"
+  name     = "${var.container_display_name_nts_webapp}-${var.container_source_repo_branch_nts_webapp}-Pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
   artifact_store {
     location = aws_s3_bucket.artifact_bucket.bucket
@@ -210,12 +204,11 @@ resource "aws_codepipeline" "pipeline" {
 
       configuration = {
         ConnectionArn    = aws_codestarconnections_connection.github.arn
-        FullRepositoryId = var.container_image_repo_name_nginx
-        BranchName       = var.container_source_repo_branch_nginx
+        FullRepositoryId = var.container_source_repo_name_nts_webapp
+        BranchName       = var.container_source_repo_branch_nts_webapp
       }
     }
   }
-
 
 
   stage {
@@ -246,8 +239,8 @@ resource "aws_codepipeline" "pipeline" {
       run_order       = 1
       input_artifacts = ["BuildOutput"]
       configuration = {
-        ClusterName       = "${var.stack}-Cluster"
-        ServiceName       = "${var.stack}-Service"
+        ClusterName       = "${var.family}-Cluster"
+        ServiceName       = "${var.family}-Service"
         FileName          = "imagedefinitions.json"
         DeploymentTimeout = "15"
       }
@@ -255,27 +248,16 @@ resource "aws_codepipeline" "pipeline" {
   }
 }
 
-output "pipeline_url" {
-  value = "https://console.aws.amazon.com/codepipeline/home?region=${var.region}#/view/${aws_codepipeline.pipeline.id}"
-}
 
 # -------------------------------------------------------------------------------------------------
 # ECR
 # -------------------------------------------------------------------------------------------------
 
-resource "aws_ecr_repository" "image_repo" {
-  name                 = var.container_image_repo_name_nginx
+resource "aws_ecr_repository" "ecr_image_repo" {
+  name                 = var.container_source_repo_name_nts_webapp
   image_tag_mutability = "MUTABLE"
 
   #  image_scanning_configuration {
   #    scan_on_push = true
   #  }
-}
-
-output "image_repo_url" {
-  value = aws_ecr_repository.image_repo.repository_url
-}
-
-output "image_repo_arn" {
-  value = aws_ecr_repository.image_repo.arn
 }

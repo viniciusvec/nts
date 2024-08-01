@@ -77,7 +77,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy" {
 
 
 resource "aws_ecs_cluster" "main" {
-  name = "nginx-cluster"
+  name = "webapp-cluster"
 }
 
 ################################### SG
@@ -121,8 +121,8 @@ resource "aws_vpc_security_group_egress_rule" "allow_https_out_to_internet" {
 ################################### ECS  
 
 # ECS Task Definition 
-resource "aws_ecs_task_definition" "nginx" {
-  family                   = "nginx-task"
+resource "aws_ecs_task_definition" "webapp" {
+  family                   = var.family
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256" # 256 CPU units equate to 0.25 vCPUs
@@ -130,8 +130,8 @@ resource "aws_ecs_task_definition" "nginx" {
 
   container_definitions = jsonencode([
     {
-      name  = "nginx"
-      image = "${aws_ecr_repository.image_repo.repository_url}",
+      name  = "webapp"
+      image = "${aws_ecr_repository.ecr_image_repo.repository_url}",
       portMappings = [
         {
           containerPort = 80
@@ -144,8 +144,8 @@ resource "aws_ecs_task_definition" "nginx" {
   task_role_arn      = aws_iam_role.ecs_task_role.arn
 }
 # # ECS Task Definition 
-# resource "aws_ecs_task_definition" "nginx" {
-#   family                   = "nginx-task"
+# resource "aws_ecs_task_definition" "webapp" {
+#   family                   = "webapp-task"
 #   network_mode             = "awsvpc"
 #   requires_compatibilities = ["FARGATE"]
 #   cpu                      = "256" # 256 CPU units equate to 0.25 vCPUs
@@ -153,7 +153,7 @@ resource "aws_ecs_task_definition" "nginx" {
 
 #   container_definitions = jsonencode([
 #     {
-#       name  = "nginx"
+#       name  = "webapp"
 #       image = "nginx"
 #       portMappings = [
 #         {
@@ -168,10 +168,10 @@ resource "aws_ecs_task_definition" "nginx" {
 # }
 
 # ECS Service 
-resource "aws_ecs_service" "nginx" {
-  name            = "nginx-service"
+resource "aws_ecs_service" "webapp" {
+  name            = "webapp-service"
   cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.nginx.arn
+  task_definition = aws_ecs_task_definition.webapp.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
@@ -181,8 +181,8 @@ resource "aws_ecs_service" "nginx" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.nginx-tg.arn
-    container_name   = "nginx"
+    target_group_arn = aws_lb_target_group.webapp-tg.arn
+    container_name   = "webapp"
     container_port   = 80
   }
 }

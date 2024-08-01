@@ -21,28 +21,30 @@ variable "availability_zones" {
 
 
 ##################### Container CI/CD
-variable "container_source_repo_branch_nginx" {
+variable "container_source_repo_branch_nts_webapp" {
   description = ""
   type        = string
-  default     = "main"
+  #default     = "main"
+  default = "master"
 }
 
-variable "container_display_name_nginx" {
+variable "container_display_name_nts_webapp" {
   description = ""
   type        = string
-  default     = "nginx"
+  default     = "nts_webapp"
 }
 
 # Image repo name for ECR
-variable "container_image_repo_name_nginx" {
+variable "container_source_repo_name_nts_webapp" {
   description = ""
   type        = string
-  default     = "viniciusvec/nginx-buildspec"
+  #default     = "viniciusvec/nginx-buildspec"
+  default = "nginxinc/docker-nginx"
 }
 
-variable "stack" {
+variable "family" {
   description = "Name of the stack."
-  default     = "Nginx"
+  default     = "webapp-task"
 }
 
 variable "build_project_source" {
