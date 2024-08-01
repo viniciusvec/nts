@@ -17,6 +17,8 @@ phases:
 
   build:
     commands:
+      - echo -- debug --
+      - pwd && find . -name "buildspec.yml"
       - echo Validating Terraform configuration...
       - terraform validate
       - echo Planning Terraform changes...
