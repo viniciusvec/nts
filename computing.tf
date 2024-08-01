@@ -131,7 +131,7 @@ resource "aws_ecs_task_definition" "nginx" {
   container_definitions = jsonencode([
     {
       name  = "nginx"
-      image = "nginx"
+      image = "${aws_ecr_repository.image_repo.repository_url}",
       portMappings = [
         {
           containerPort = 80
@@ -143,6 +143,29 @@ resource "aws_ecs_task_definition" "nginx" {
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_role.arn
 }
+# # ECS Task Definition 
+# resource "aws_ecs_task_definition" "nginx" {
+#   family                   = "nginx-task"
+#   network_mode             = "awsvpc"
+#   requires_compatibilities = ["FARGATE"]
+#   cpu                      = "256" # 256 CPU units equate to 0.25 vCPUs
+#   memory                   = "512" # 512 MiB
+
+#   container_definitions = jsonencode([
+#     {
+#       name  = "nginx"
+#       image = "nginx"
+#       portMappings = [
+#         {
+#           containerPort = 80
+#           hostPort      = 80
+#         }
+#       ]
+#     }
+#   ])
+#   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+#   task_role_arn      = aws_iam_role.ecs_task_role.arn
+# }
 
 # ECS Service 
 resource "aws_ecs_service" "nginx" {
