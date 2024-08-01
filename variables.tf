@@ -24,8 +24,8 @@ variable "availability_zones" {
 variable "container_source_repo_branch_nts_webapp" {
   description = ""
   type        = string
-  #default     = "main"
-  default = "master"
+  default     = "main"
+  #default = "master"
 }
 
 variable "container_display_name_nts_webapp" {
@@ -38,8 +38,8 @@ variable "container_display_name_nts_webapp" {
 variable "container_source_repo_name_nts_webapp" {
   description = ""
   type        = string
-  #default     = "viniciusvec/nginx-buildspec"
-  default = "nginxinc/docker-nginx"
+  default     = "viniciusvec/nginx-buildspec"
+  #default = "nginxinc/docker-nginx"
 }
 
 variable "family" {
