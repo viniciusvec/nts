@@ -1,6 +1,6 @@
 # WIP
 
-Lorem Ipsum
+Lorem Ipsum.
 
 ## Directory Structure
 
