@@ -1,13 +1,3 @@
-provider "aws" {
-  region = var.region # Alternatively, "eu-central-1" for EU
-}
-
-data "aws_caller_identity" "current" {}
-
-locals {
-  account_id = data.aws_caller_identity.current.account_id
-}
-
 ################################### VPC 
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
