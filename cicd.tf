@@ -75,6 +75,10 @@ resource "aws_codepipeline" "pipeline" {
     location = aws_s3_bucket.artifact_bucket.bucket
     type     = "S3"
   }
+  tags = {
+    Project  = "nts"
+    Pipeline = "workload"
+  }
 
   stage {
     name = "Source"
