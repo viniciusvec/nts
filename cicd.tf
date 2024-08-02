@@ -13,7 +13,7 @@ resource "aws_codebuild_project" "codebuild" {
   }
   environment {
     compute_type                = "BUILD_GENERAL1_MEDIUM"
-    image                       = var.build_project_source
+    image                       = "CODEPIPELINE"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = true
     image_pull_credentials_type = "CODEBUILD"
@@ -44,7 +44,7 @@ resource "aws_codebuild_project" "codebuild" {
 
   }
   source {
-    type = var.build_project_source
+    type = "CODEPIPELINE"
     #buildspec = "./templates/buildspec_${var.build_projects[count.index]}.yml"
   }
 }

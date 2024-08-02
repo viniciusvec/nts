@@ -46,7 +46,7 @@ variable "family" {
 }
 
 variable "build_project_source" {
-  description = "aws/codebuild/standard:5.0"
+  description = ""
   type        = string
   default     = "CODEPIPELINE"
 }

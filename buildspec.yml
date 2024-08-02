@@ -25,11 +25,6 @@ phases:
       - echo Applying Terraform changes...
       - terraform apply -auto-approve tfplan
 
-  post_build:
-    commands:
-      - echo Cleaning up Terraform resources...
-      - terraform destroy -auto-approve
-
 artifacts:
   files:
     - "**/*"
