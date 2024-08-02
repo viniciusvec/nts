@@ -45,7 +45,6 @@ resource "aws_codebuild_project" "codebuild" {
   }
   source {
     type = var.build_project_source
-    #buildspec = "./templates/buildspec_${var.build_projects[count.index]}.yml"
   }
 }
 
