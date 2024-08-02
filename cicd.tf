@@ -296,6 +296,7 @@ resource "aws_iam_policy" "codepipeline_policy" {
       "Action" : [
         "codebuild:StartBuild", "codebuild:BatchGetBuilds",
         "iam:PassRole",
+        "ecr:*",
         "ecs:*"
       ],
       "Effect": "Allow",
