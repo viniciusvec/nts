@@ -306,3 +306,18 @@ resource "aws_iam_role_policy_attachment" "codepipeline-attach" {
   role       = aws_iam_role.codepipeline_role.name
   policy_arn = aws_iam_policy.codepipeline_policy.arn
 }
+
+
+###################### Outputs
+
+
+output "codepipeline_name" {
+  value       = aws_codepipeline.pipeline.name
+  description = "The Name of the CodePipeline"
+}
+
+
+output "github_connector_name" {
+  value       = aws_codestarconnections_connection.github.name
+  description = "The name of the CodePipeline Github Connector"
+}

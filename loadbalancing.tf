@@ -68,3 +68,12 @@ resource "aws_vpc_security_group_egress_rule" "allow_http_out_to_ecs" {
   from_port                    = 80
   to_port                      = 80
 }
+
+
+################################### Outputs
+
+
+output "dns_name" {
+  description = "The DNS name of the load balancer"
+  value       = aws_lb.alb.dns_name
+}
