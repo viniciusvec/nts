@@ -35,7 +35,7 @@ resource "aws_codebuild_project" "codebuild" {
     }
     environment_variable {
       name  = "IMAGE_REPO_NAME"
-      value = var.container_display_name_nts_webapp
+      value = var.container_source_repo_name_nts_webapp
     }
     environment_variable {
       name  = "IMAGE_TAG"
