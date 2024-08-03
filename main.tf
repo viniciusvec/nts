@@ -102,18 +102,18 @@ resource "aws_route_table_association" "public_rt_assoc3" {
 #   }
 # }
 
-# Private Route Table Association 
-resource "aws_route_table_association" "private_rt_assoc1" {
-  subnet_id      = aws_subnet.private_subnet1.id
-  route_table_id = aws_route_table.private_rt.id
-}
+# # Private Route Table Association 
+# resource "aws_route_table_association" "private_rt_assoc1" {
+#   subnet_id      = aws_subnet.private_subnet1.id
+#   route_table_id = aws_route_table.private_rt.id
+# }
 
-resource "aws_route_table_association" "private_rt_assoc2" {
-  subnet_id      = aws_subnet.private_subnet2.id
-  route_table_id = aws_route_table.private_rt.id
-}
+# resource "aws_route_table_association" "private_rt_assoc2" {
+#   subnet_id      = aws_subnet.private_subnet2.id
+#   route_table_id = aws_route_table.private_rt.id
+# }
 
-resource "aws_route_table_association" "private_rt_assoc3" {
-  subnet_id      = aws_subnet.private_subnet3.id
-  route_table_id = aws_route_table.private_rt.id
-}
+# resource "aws_route_table_association" "private_rt_assoc3" {
+#   subnet_id      = aws_subnet.private_subnet3.id
+#   route_table_id = aws_route_table.private_rt.id
+# }
