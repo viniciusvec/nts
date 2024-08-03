@@ -116,7 +116,7 @@ If needed, re-run the IaC pipeline first stage.
 Check with the command below the running EIPs associated with ALBs.
 
 ```shell
-....
+aws elbv2 describe-load-balancers --names "alb" --query "LoadBalancers[0].DNSName" --output json
 ```
 
 _\* note that due to deployment workflow it takes 10-20 minutes for the the IaC components to set up, build the infrastructure, build container, deploy the ECS task and register with the ALB._
