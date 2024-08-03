@@ -23,7 +23,7 @@ resource "aws_codebuild_project" "codebuild" {
     }
     environment_variable {
       name  = "AWS_DEFAULT_REGION"
-      value = local.region
+      value = var.region
     }
     environment_variable {
       name  = "CONTAINER_NAME"
