@@ -181,7 +181,7 @@ For Security reasons, do not use this code for production until dilligent review
 
 To list a few:
 
-- General code housekeeping: variables, modules, outputs, etc..
+- General code housekeeping: variables, modules, outputs, dependencies, etc..
 - ALB certificate termination and use of AWS Certificate Manager.
 - Finetuning of IAM roles for CodePipeline
 - The container deploy is simply nginx. For this reason, once other applications are selected, SG groups have to be adjusted.
