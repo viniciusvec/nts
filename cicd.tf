@@ -6,8 +6,9 @@ resource "aws_codebuild_project" "codebuild" {
   depends_on = [
     aws_ecr_repository.ecr_image_repo
   ]
-  name         = "codebuild-${var.container_display_name_nts_webapp}-${var.container_source_repo_branch_nts_webapp}"
-  service_role = aws_iam_role.codebuild_role.arn
+  name          = "codebuild-${var.container_display_name_nts_webapp}-${var.container_source_repo_branch_nts_webapp}"
+  build_timeout = 20
+  service_role  = aws_iam_role.codebuild_role.arn
   artifacts {
     type = "CODEPIPELINE"
   }
