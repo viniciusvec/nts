@@ -59,10 +59,14 @@ resource "aws_iam_policy" "ecs_to_rds_task_policy" {
           "rds-db:connect"
         ]
         Resource = "*"
-        # Resource = [
-        #   "${aws_rds_cluster.rds_cluster.arn}",
-        #   "${aws_rds_cluster_instance.aurora_instance[*].arn}"
-        # ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:*",
+          "s3:Get*"
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -142,6 +146,8 @@ resource "aws_ecs_task_definition" "nts_webapp" {
   ])
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_role.arn
+
+  depends_on = [aws_lb.alb]
 }
 
 # ECS Service 
