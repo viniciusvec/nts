@@ -68,4 +68,8 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
   engine             = aws_rds_cluster.rds_cluster.engine
   engine_version     = aws_rds_cluster.rds_cluster.engine_version
 
+  timeouts {
+    create = "30m"
+    delete = "60m"
+  }
 }
