@@ -181,6 +181,7 @@ For Security reasons, do not use this code for production until dilligent review
 
 To list a few:
 
+- General code housekeeping: variables, modules, outputs, etc..
 - ALB certificate termination and use of AWS Certificate Manager.
 - Finetuning of IAM roles for CodePipeline
 - Infrastructure to support microservices such as SQS or EventBridge was provisioned.
