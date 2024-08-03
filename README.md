@@ -66,14 +66,14 @@ _IaC CI/CD + Workload CI/CD + Microservices Infra_<br />
 
 Deployment workflow:
 
-- Terraform runs and IaC Pipeline is set up.
-- Manual intervention for the new github connection.
-- IaC CodePipeline pulls nts project (this) validates and deploys Workload CI/CD + Microservices Infrastructure.
-- ECS Cluster (part of Microservices Infrastructure) will be empty of Tasks, until the Workload CI/CD processes the pulls nginx-buildspec and deploys the container into ECR.
-- Manual intervention for the new github connection.
-- ECS Cluster will then pull image from ECR and deploy the nts webapp task.
-- ECS will deploy the task and register it with ALB.
-- Webapp (nginx) should be available externally via ALB address
+1. Terraform runs and IaC Pipeline is set up.
+2. Manual intervention for the [new github connection](console.aws.amazon.com/codesuite/settings/connections). Aftewards you have to instruct the "tf-validate-project-pipeline" Pipeline to re-run the failed stage.
+3. IaC CodePipeline pulls nts project (this), validates and deploys Workload CI/CD + Microservices Infrastructure.
+4. ECS Cluster (part of Microservices Infrastructure) will be empty of Tasks, until the Workload CI/CD processes the pulls nginx-buildspec and deploys the container into ECR.
+5. Manual intervention for the new github connection. Aftewards you have to instruct the "nts_webapp-main-Pipeline" Pipeline to re-run the failed stage.
+6. The "nts_webapp-main-Pipeline" will make the container available on ECR. ECS Cluster will then pull image from ECR and deploy the nts webapp task.
+7. ECS will deploy the task and register it with ALB.
+8. Webapp (nginx) should be available externally via ALB address
 
 A ready-made code to deploy a IaC CI/CD was forked from AWS samples and has been modified for a number of reasons (see the README for details): from scratch: https://github.com/viniciusvec/aws-codepipeline-terraform-cicd-samples
 
@@ -102,16 +102,31 @@ terraform apply tf-plan
 
 ### Step 4: Manually authorise the connector in AWS
 
-AWS requires manual intervention to update the pending connection to github. This is needed for the CodePipeline source stage to be able to pull the code from the configured repos.
+AWS requires manual intervention to update the pending [new github connection](console.aws.amazon.com/codesuite/settings/connections).
+This is needed for the CodePipeline source stage to be able to pull the web app microservice code from the configured repos.
 
 Follow the instructions: https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html
+
+Then, [instruct the "tf-validate-project-pipeline" Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/tf-validate-project-pipeline/view) to retry the failed stage.
 
 ### Step 5: Verify that CodePipeline is running
 
 This should unclog the pipeline - check [CodePipeline](https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines?region=eu-west-2).
 If needed, re-run the IaC pipeline first stage.
 
-### Step 6: Validate
+### Step 6: Manually authorise the connector in AWS
+
+Once again, manual intervention is needed to update the pending connection to github.
+
+- This is to let CodePipeline source stage to be able to pull terraform code from the configured repos.
+
+- ! notice that terraform builds this connector very early so if this is done right after the previous manual intervention it may not need to re-run the failed stage on the "nts_webapp-main-Pipeline" Pipeline.
+
+Follow the instructions: https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html
+
+Then, [instruct the "nts_webapp-main-Pipeline" Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/nts_webapp-main-Pipeline/view) to retry the failed stage.
+
+### Step 7: Validate
 
 Check with the command below the running EIPs associated with ALBs.
 
@@ -182,6 +197,7 @@ For Security reasons, do not use this code for production until dilligent review
 To list a few:
 
 - General code housekeeping: variables, modules, outputs, dependencies, etc..
+- Implement VPC enpoints for AWS services to be able to block all egress from private subnet.
 - ALB certificate termination and use of AWS Certificate Manager.
 - Finetuning of IAM roles for CodePipeline
 - The container deploy is simply nginx. For this reason, once other applications are selected, SG groups have to be adjusted.
