@@ -153,7 +153,7 @@ resource "aws_ecs_service" "nts_webapp" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets         = [aws_subnet.private_subnet1.id, aws_subnet.private_subnet2.id]
+    subnets         = [aws_subnet.private_subnet1.id, aws_subnet.private_subnet2.id, aws_subnet.private_subnet3.id]
     security_groups = [aws_security_group.ecs_sg.id]
   }
 

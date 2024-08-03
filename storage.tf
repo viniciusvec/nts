@@ -25,7 +25,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_mysql_to_rds" {
 # RDS Subnet Group  
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "rds-subnet-group"
-  subnet_ids = [aws_subnet.private_subnet1.id, aws_subnet.private_subnet2.id]
+  subnet_ids = [aws_subnet.private_subnet1.id, aws_subnet.private_subnet2.id, aws_subnet.private_subnet3.id]
 }
 
 
