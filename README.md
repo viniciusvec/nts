@@ -67,11 +67,11 @@ _IaC CI/CD + Workload CI/CD + Microservices Infra_<br />
 Deployment workflow:
 
 1. Terraform runs and IaC Pipeline is set up.
-2. Manual intervention for the [new github connection](console.aws.amazon.com/codesuite/settings/connections). Aftewards you have to instruct the "tf-validate-project-pipeline" Pipeline to re-run the failed stage.
+2. Manual intervention for the [new github connection](console.aws.amazon.com/codesuite/settings/connections). Aftewards you have to instruct the `tf-validate-project-pipeline` Pipeline to re-run the failed stage.
 3. IaC CodePipeline pulls nts project (this), validates and deploys Workload CI/CD + Microservices Infrastructure.
 4. ECS Cluster (part of Microservices Infrastructure) will be empty of Tasks, until the Workload CI/CD processes the pulls nginx-buildspec and deploys the container into ECR.
-5. Manual intervention for the new github connection. Aftewards you have to instruct the "nts_webapp-main-Pipeline" Pipeline to re-run the failed stage.
-6. The "nts_webapp-main-Pipeline" will make the container available on ECR. ECS Cluster will then pull image from ECR and deploy the nts webapp task.
+5. Manual intervention for the new github connection. Aftewards you have to instruct the `nts_webapp-main-Pipeline` Pipeline to re-run the failed stage.
+6. The `nts_webapp-main-Pipeline` will make the container available on ECR. ECS Cluster will then pull image from ECR and deploy the nts webapp task.
 7. ECS will deploy the task and register it with ALB.
 8. Webapp (nginx) should be available externally via ALB address
 
@@ -107,7 +107,7 @@ This is needed for the CodePipeline source stage to be able to pull the web app 
 
 Follow the instructions: https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html
 
-Then, [instruct the "tf-validate-project-pipeline" Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/tf-validate-project-pipeline/view) to retry the failed stage.
+Then, [instruct the `tf-validate-project-pipeline` Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/tf-validate-project-pipeline/view) to retry the failed stage.
 
 ### Step 5: Verify that CodePipeline is running
 
@@ -120,22 +120,11 @@ Once again, manual intervention is needed to update the pending connection to gi
 
 - This is to let CodePipeline source stage to be able to pull terraform code from the configured repos.
 
-- ! notice that terraform builds this connector very early so if this is done right after the previous manual intervention it may not need to re-run the failed stage on the "nts_webapp-main-Pipeline" Pipeline.
+- ! notice that terraform builds this connector very early so if this is done right after the previous manual intervention it may not need to re-run the failed stage on the `nts_webapp-main-Pipeline` Pipeline.
 
 Follow the instructions: https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html
 
-Then, [instruct the "nts_webapp-main-Pipeline" Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/nts_webapp-main-Pipeline/view) to retry the failed stage.
-
-### Step 7: Validate
-
-Check with the command below the running EIPs associated with ALBs.
-
-```shell
-aws elbv2 describe-load-balancers --names "alb" --query "LoadBalancers[0].DNSName" --output json
-```
-
-_\* note that due to deployment workflow it takes 10-20 minutes for the the IaC components to set up, build the infrastructure, build container, deploy the ECS task and register with the ALB._
-<br />
+Then, [instruct the `nts_webapp-main-Pipeline` Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/nts_webapp-main-Pipeline/view) to retry the failed stage.
 
 ## Option 2: CI/CD + Microservices Infra only
 
@@ -167,11 +156,14 @@ terraform plan -out tf-plan
 terraform apply tf-plan
 ```
 
-### Step 3: Validate
+## Validation Validate
 
-Check the output from Terraform with the ALB URL.
-_\* note that due to deployment workflow it takes 5-10 minutes for the build the infrastructure to set up, build container, deploy the ECS task and register with the ALB._
-<br /><br />
+1. Verify that the pipelines `nts_webapp-main-Pipeline` is successful, and `tf-validate-project-pipeline` pipeline has suceeded with the exception of the last stage (as it is to destroy the infra): https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines (you may need to adjust the region)
+2. Verify that the cluster has the tasks running: https://eu-west-2.console.aws.amazon.com/ecs/v2/clusters/webapp-cluster (you may need to adjust the region)
+3. Check the output from Terraform with the ALB `DNS name` (https://eu-west-2.console.aws.amazon.com/ec2/home?region=eu-west-2#LoadBalancers:) and paste onto a new Browser tab
+   <br /><br />
+   _\* note that due to deployment workflow it takes 5-10 minutes for the build the infrastructure to set up (RDS is particularly slow), build container, deploy the ECS task and register with the ALB._
+   <br /><br />
 
 # Clean-up steps
 
@@ -180,7 +172,10 @@ _\* note that due to deployment workflow it takes 5-10 minutes for the build the
 Recommended - simply delete the AWS account created for this.
 
 Otherwise:
-Destroy using terraform.
+
+1. In the pipeline `tf-validate-project-pipeline`, Approve the destroy stage manually: https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines
+
+2. Run terraform destroy locally (in your `aws-codepipeline-terraform-cicd-samples` project)
 
 ```shell
 terraform destroy -auto-approve
