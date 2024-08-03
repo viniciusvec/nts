@@ -4,12 +4,6 @@ variable "db_username" {
   default     = "admin"
 }
 
-variable "region" {
-  description = ""
-  type        = string
-  default     = "eu-west-2"
-}
-
 # To replace dynamic fetch of availability zones
 # data "aws_availability_zones" "available" {}
 variable "availability_zones" {
