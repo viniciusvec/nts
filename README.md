@@ -184,6 +184,7 @@ To list a few:
 - General code housekeeping: variables, modules, outputs, etc..
 - ALB certificate termination and use of AWS Certificate Manager.
 - Finetuning of IAM roles for CodePipeline
+- The container deploy is simply nginx. For this reason, once other applications are selected, SG groups have to be adjusted.
 - Infrastructure to support microservices such as SQS or EventBridge was provisioned.
 - Customer-managed use of KMS keys and Secret Manager secrets - AWS-managed used instead.
 - This could be be replaced if there are requirements: ECS -> EKS, ALB -> API Gateway, Fargate -> customer provisioned EC2, etc.
