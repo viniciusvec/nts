@@ -149,7 +149,7 @@ resource "aws_ecs_service" "nts_webapp" {
   name            = "ntswebapp-service"
   cluster         = aws_ecs_cluster.nts_webapp.id
   task_definition = aws_ecs_task_definition.nts_webapp.arn
-  desired_count   = 1
+  desired_count   = 1 # Size reduced to speed up dev environment
   launch_type     = "FARGATE"
 
   network_configuration {

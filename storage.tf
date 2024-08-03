@@ -51,8 +51,8 @@ resource "aws_rds_cluster" "rds_cluster" {
   skip_final_snapshot = true # consider removing for production
 
   serverlessv2_scaling_configuration {
-    max_capacity = 1.0
-    min_capacity = 0.5
+    max_capacity = 2.0
+    min_capacity = 1.0
   }
 
   tags = {
@@ -62,7 +62,7 @@ resource "aws_rds_cluster" "rds_cluster" {
 
 resource "aws_rds_cluster_instance" "aurora_instance" {
   identifier         = "aurora-cluster-instance-${count.index}"
-  count              = 2
+  count              = 1 # Size reduced to speed up dev environment
   cluster_identifier = aws_rds_cluster.rds_cluster.id
   instance_class     = "db.serverless"
   engine             = aws_rds_cluster.rds_cluster.engine
