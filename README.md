@@ -77,7 +77,7 @@ Deployment workflow:
 
 A ready-made code to deploy a IaC CI/CD was forked from AWS samples and has been modified for a number of reasons (see the README for details): from scratch: https://github.com/viniciusvec/aws-codepipeline-terraform-cicd-samples
 
-### Step 1: Clone the IaC pipeline repository.
+### Step 1: Clone the IaC pipeline repository - the fork not the original!.
 
 Using git cli:
 
