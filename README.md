@@ -16,19 +16,6 @@ Other services were used to complement the infrastructure such as: AWS KMS, AWS 
 \* Only if the Full End-to-end Deployment is used (see option 1).<br />
 \+ Deployed regardless.
 
-### Directory Structure
-
-```shell
-|-- LICENSE
-|-- README.md
-|-- buildspec.yaml      -> for CodeBuild
-|-- main.tf             -> for Terraform
-|-- variables.tf        -> for Terraform
-|-- loadbalancing.tf    -> for Terraform
-|-- computing.tf        -> for Terraform
-|-- storage.tf          -> for Terraform
-```
-
 ## Pre-Requisites
 
 ### Step 1 (Optional): New AWS sandbox account
