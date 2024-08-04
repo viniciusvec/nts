@@ -60,7 +60,7 @@ Deployment workflow:
 
 1. Terraform runs and IaC Pipeline is set up.
 2. Manual intervention for the [new github connection](console.aws.amazon.com/codesuite/settings/connections). Aftewards you have to instruct the `tf-validate-project-pipeline` Pipeline to re-run the failed stage.
-3. IaC CodePipeline pulls nts project (this), validates and deploys Workload CI/CD + Microservices Infrastructure.
+3. IaC CodePipeline pulls nts project (this), validates and deploys Workload CI/CD + Microservices Infrastructure - including `nts_webapp-main-Pipeline` which will deploy the containers.
 4. ECS Cluster (part of Microservices Infrastructure) will be empty of Tasks, until the Workload CI/CD processes the pulls nginx-buildspec and deploys the container into ECR.
 5. Manual intervention for the new github connection. Aftewards you have to instruct the `nts_webapp-main-Pipeline` Pipeline to re-run the failed stage.
 6. The `nts_webapp-main-Pipeline` will make the container available on ECR. ECS Cluster will then pull image from ECR and deploy the nts webapp task.
@@ -69,7 +69,7 @@ Deployment workflow:
 
 A ready-made code to deploy a IaC CI/CD was forked from AWS samples and has been modified for a number of reasons (see the README for details): from scratch: https://github.com/viniciusvec/aws-codepipeline-terraform-cicd-samples
 
-### Step 1: Clone the IaC pipeline repository - the fork not the original!.
+### Step 1: Clone the IaC pipeline repository - the fork not the original!
 
 Using git cli:
 
@@ -116,7 +116,7 @@ Once again, manual intervention is needed to update the pending connection to gi
 
 Follow the instructions: https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html
 
-Then, [instruct the `nts_webapp-main-Pipeline` Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/nts_webapp-main-Pipeline/view) to retry the failed stage.
+Then, [instruct the `nts_webapp-main-Pipeline` Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/nts_webapp-main-Pipeline/view) to retry the failed stage - if needed.
 
 ## Option 2: CI/CD + Microservices Infra only
 
@@ -148,6 +148,18 @@ terraform plan -out tf-plan
 terraform apply tf-plan
 ```
 
+### Step 3: Manually authorise the connector in AWS
+
+Once again, manual intervention is needed to update the pending connection to github.
+
+- This is to let CodePipeline source stage to be able to pull terraform code from the configured repos.
+
+- ! notice that terraform builds this connector very early so if this is done right after the previous manual intervention it may not need to re-run the failed stage on the `nts_webapp-main-Pipeline` Pipeline.
+
+Follow the instructions: https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html
+
+Then, [instruct the `nts_webapp-main-Pipeline` Pipeline](console.aws.amazon.com/codesuite/codepipeline/pipelines/nts_webapp-main-Pipeline/view) to retry the failed stage - if needed.
+
 ## Validation
 
 1. Verify that the pipelines `nts_webapp-main-Pipeline` is successful, and `tf-validate-project-pipeline` pipeline has suceeded with the exception of the last stage (as it is to destroy the infra): https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines (you may need to adjust the region)
@@ -163,6 +175,8 @@ terraform apply tf-plan
 3. Check the output from Terraform with the ALB `DNS name` (https://eu-west-2.console.aws.amazon.com/ec2/home?region=eu-west-2#LoadBalancers:) and paste onto a new Browser tab
    <br /><br />
    _\* note that due to deployment workflow it takes 5-10 minutes for the build the infrastructure to set up (RDS is particularly slow), build container, deploy the ECS task and register with the ALB._
+   <br /><br />
+   <img src="images/nginx.jpg"/>
    <br /><br />
 
 # Clean-up steps
