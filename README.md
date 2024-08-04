@@ -148,10 +148,18 @@ terraform plan -out tf-plan
 terraform apply tf-plan
 ```
 
-## Validation Validate
+## Validation
 
 1. Verify that the pipelines `nts_webapp-main-Pipeline` is successful, and `tf-validate-project-pipeline` pipeline has suceeded with the exception of the last stage (as it is to destroy the infra): https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines (you may need to adjust the region)
+
+<img src="images/pipelines_successful_status.jpg"/>
+<br /><br />
+
 2. Verify that the cluster has the tasks running: https://eu-west-2.console.aws.amazon.com/ecs/v2/clusters/webapp-cluster (you may need to adjust the region)
+
+<img src="images/ecs_successful_status__tasks_runing.jpg"/>
+<br /><br />
+
 3. Check the output from Terraform with the ALB `DNS name` (https://eu-west-2.console.aws.amazon.com/ec2/home?region=eu-west-2#LoadBalancers:) and paste onto a new Browser tab
    <br /><br />
    _\* note that due to deployment workflow it takes 5-10 minutes for the build the infrastructure to set up (RDS is particularly slow), build container, deploy the ECS task and register with the ALB._
