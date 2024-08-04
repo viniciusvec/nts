@@ -60,6 +60,11 @@ This code can be deployed with two options:
 3 Microservices Infra
 ```
 
+#### Architecture: <br />
+
+<img src="images/diagram.jpg"/>
+<br /><br />
+
 ## Option 1: Full End-to-end Deployment
 
 _IaC CI/CD + Workload CI/CD + Microservices Infra_<br />
@@ -167,6 +172,8 @@ terraform apply tf-plan
 
 # Clean-up steps
 
+## Option 1: Full End-to-end Deployment
+
 #### Run terraform destroy
 
 Recommended - simply delete the AWS account created for this.
@@ -176,6 +183,22 @@ Otherwise:
 1. In the pipeline `tf-validate-project-pipeline`, Approve the destroy stage manually: https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines
 
 2. Run terraform destroy locally (in your `aws-codepipeline-terraform-cicd-samples` project)
+
+```shell
+terraform destroy -auto-approve
+```
+
+<br /><br />
+
+## Option 2: CI/CD + Microservices Infra only
+
+#### Run terraform destroy
+
+Recommended - simply delete the AWS account created for this.
+
+Otherwise:
+
+Run terraform destroy locally (in your `nts` project)
 
 ```shell
 terraform destroy -auto-approve
